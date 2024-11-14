@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Signup</title>
+
+  <!-- เริ่มต้น CSS ภายในไฟล์ HTML -->
+  <style>
+    /* Global Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Background Gradient with subtle color fade effect */
+    body {
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #1E2A47, #1A2238, #3B4A7D); /* Gradient Background */
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Overlay for Dimmed effect */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    /* Main container */
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: linear-gradient(135deg, #2C3546, #1A2238); /* Gradient background for form */
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      transform: translateY(50px);
+      opacity: 0;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+
+    /* Animation for fade-in */
+    @keyframes fadeInUp {
+      0% {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Form container */
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    /* Labels and Inputs */
+    label {
+      font-size: 14px;
+      color: #ddd;
+      margin-bottom: 5px;
+      align-self: flex-start;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      font-size: 14px;
+      background-color: #2C3546;
+      color: #fff;
+      outline: none;
+      transition: border 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #4C6E91;
+    }
+
+    /* Checkbox for Remember Me */
+    .remember-me {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .remember-me input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+    }
+
+    /* Button */
+    .btn-submit {
+      padding: 12px 20px;
+      background-color: #4C6E91;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: #365F86;
+    }
+
+    p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #bbb;
+    }
+
+    /* Links styling */
+    a {
+      color: #4C6E91;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 30px;
+      }
+
+      .btn-submit {
+        font-size: 14px;
+      }
+
+      input {
+        padding: 10px;
+      }
+    }
+
+    /* Register Button */
+    .btn-signup {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #365F86;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-signup:hover {
+      background-color: #4C6E91;
+    }
+
+    /* Success message */
+    .success-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 40px 80px;
+      background-color: #4C6E91; /* ใช้สีน้ำเงินที่เข้ากับโทนสีของเว็บ */
+      color: #fff;
+      border-radius: 10px;
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+      display: none; /* ซ่อนไว้ก่อน */
+      z-index: 1000;
+      opacity: 0;
+      animation: showSuccessMessage 2s ease-out forwards;
+    }
+
+    /* Animation for success message */
+    @keyframes showSuccessMessage {
+      0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container">
+    <!-- Login Form -->
+    <div class="form-container" id="loginForm" style="display: block;">
+      <h2>เข้าสู่ระบบ</h2>
+      <form id="loginFormElement">
+        <label for="loginEmail">อีเมล:</label>
+        <input type="email" id="loginEmail" required placeholder="กรุณากรอกอีเมล">
+
+        <label for="loginPassword">รหัสผ่าน:</label>
+        <input type="password" id="loginPassword" required placeholder="กรุณากรอกรหัสผ่าน">
+
+        <div class="remember-me">
+          <input type="checkbox" id="rememberMe">
+          <label for="rememberMe">จดจำฉัน</label>
+        </div>
+
+        <button type="submit" class="btn-submit">เข้าสู่ระบบ</button>
+      </form>
+      
+      <button class="btn-signup" onclick="showSignup()">สมัครสมาชิก</button>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="form-container" id="signupForm" style="display: none;">
+      <h2>สมัครสมาชิก</h2>
+      <form id="signupFormElement">
+        <label for="signupEmail">อีเมล:</label>
+        <input type="email" id="signupEmail" required placeholder="กรุณากรอกอีเมล">
+
+        <label for="signupPassword">รหัสผ่าน:</label>
+        <input type="password" id="signupPassword" required placeholder="กรุณากรอกรหัสผ่าน">
+
+        <label for="signupConfirmPassword">ยืนยันรหัสผ่าน:</label>
+        <input type="password" id="signupConfirmPassword" required placeholder="กรุณายืนยันรหัสผ่าน">
+
+        <button type="submit" class="btn-submit">สมัครสมาชิก</button>
+      </form>
+      
+      <button class="btn-signup" onclick="showLogin()">กลับไปที่หน้าล็อกอิน</button>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">Successfully Login</div>
+  </div>
+
+  <!-- เริ่มต้น JavaScript ภายในไฟล์ HTML -->
+  <script>
+    function showLogin() {
+      document.getElementById("loginForm").style.display = "block";
+      document.getElementById("signupForm").style.display = "none";
+    }
+
+    function showSignup() {
+      document.getElementById("signupForm").style.display = "block";
+      document.getElementById("loginForm").style.display = "none";
+    }
+
+    // ฟังก์ชั่นการจดจำข้อมูลการล็อกอิน
+    function rememberUser(email, password) {
+      if (document.getElementById("rememberMe").checked) {
+        localStorage.setItem("email", email);
+        localStorage.setItem("password", password);
+      } else {
+        localStorage.removeItem("email");
+        localStorage.removeItem("password");
+      }
+    }
+
+    window.onload = function() {
+      if (localStorage.getItem("email")) {
+        document.getElementById("loginEmail").value = localStorage.getItem("email");
+        document.getElementById("loginPassword").value = localStorage.getItem("password");
+        document.getElementById("rememberMe").checked = true;
+        showLogin();
+      } else {
+        showSignup();
+      }
+    }
+
+    document.getElementById("loginFormElement").addEventListener("submit", function(event) {
+      event.preventDefault();
+      let email = document.getElementById("loginEmail").value;
+      let password = document.getElementById("loginPassword").value;
+
+      rememberUser(email, password);
+
+      document.getElementById("successMessage").style.display = "block";
+
+      setTimeout(function() {
+        window.location.href = "http://127.0.0.1:3000/Donate/index.html";
+      }, 2000);
+    });
+
+    document.getElementById("signupFormElement").addEventListener("submit", function(event) {
+      event.preventDefault();
+      let email = document.getElementById("signupEmail").value;
+      let password = document.getElementById("signupPassword").value;
+      let confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+      if (password !== confirmPassword) {
+        alert("รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน");
+        return;
+      }
+
+      alert("สมัครสมาชิกสำเร็จ\nอีเมล: " + email);
+      showLogin();
+    });
+  </script>
+</body>
+</html>
